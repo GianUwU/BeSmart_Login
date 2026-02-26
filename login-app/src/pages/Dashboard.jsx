@@ -30,10 +30,19 @@ export default function Dashboard() {
       return
     }
 
-    fetch('/api/product/list')
-      .then((res) => res.json())
+    const apiUrl = import.meta.env.VITE_API_URL || '/api'
+    fetch(`${apiUrl}/product/list`)
+      .then((res) => {
+        if (!res.ok) {
+          throw new Error(`HTTP error! status: ${res.status}`)
+        }
+        return res.json()
+      })
       .then((data) => setProducts(data.products || data || []))
-      .catch((err) => setError(err.message))
+      .catch((err) => {
+        console.error('API Error:', err)
+        setError(err.message)
+      })
       .finally(() => setLoading(false))
   }, [navigate, username])
 

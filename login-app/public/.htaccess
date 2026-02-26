@@ -1,0 +1,17 @@
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteBase /
+  
+  # Don't rewrite if the request is for a real file or directory
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_FILENAME} !-d
+  
+  # Don't rewrite API requests
+  RewriteCond %{REQUEST_URI} !^/api/
+  
+  # Don't rewrite static assets (js, css, images, etc.)
+  RewriteCond %{REQUEST_URI} !\.(js|css|png|jpg|jpeg|gif|ico|svg|woff|woff2|ttf|eot)$
+  
+  # Rewrite all other requests to index.html
+  RewriteRule ^(.*)$ index.html [L]
+</IfModule>
