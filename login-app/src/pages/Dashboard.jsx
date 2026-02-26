@@ -19,7 +19,7 @@ export default function Dashboard() {
     // Fetch products
     const fetchProducts = async () => {
       try {
-        const response = await fetch('https://ipt71.kuno-schuerch.bbzwinf.ch/product/list', {
+        const response = await fetch('/api/product/list', {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',

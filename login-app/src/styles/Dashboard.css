@@ -1,3 +1,6 @@
+/* Dashboard page styles */
+
+/* Main container */
 .dashboard-container {
   min-height: 100vh;
   background: #f5f5f5;
@@ -5,6 +8,7 @@
     'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
 }
 
+/* Top header */
 .dashboard-header {
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   color: white;
@@ -20,6 +24,7 @@
   font-size: 28px;
 }
 
+/* Logout button */
 .logout-btn {
   padding: 10px 20px;
   background: rgba(255, 255, 255, 0.2);
@@ -29,7 +34,7 @@
   font-size: 14px;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.3s;
+  transition: 0.3s;
 }
 
 .logout-btn:hover {
@@ -37,30 +42,34 @@
   color: #667eea;
 }
 
+/* Main content area */
 .dashboard-main {
   max-width: 1200px;
   margin: 40px auto;
   padding: 0 20px;
 }
 
+/* Section heading */
 .products-section h2 {
   color: #333;
   font-size: 24px;
   margin-bottom: 20px;
 }
 
+/* Products grid */
 .products-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   gap: 20px;
 }
 
+/* Product card */
 .product-card {
   background: white;
   padding: 20px;
   border-radius: 8px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  transition: transform 0.3s, box-shadow 0.3s;
+  transition: 0.3s;
 }
 
 .product-card:hover {
@@ -88,6 +97,7 @@
   margin-top: 15px;
 }
 
+/* Status messages */
 .loading,
 .error,
 .no-products {
@@ -104,6 +114,7 @@
   border-radius: 5px;
 }
 
+/* Mobile responsive */
 @media (max-width: 768px) {
   .dashboard-header {
     flex-direction: column;
