@@ -10,7 +10,14 @@ export default defineConfig({
       '/api': {
         target: 'https://ipt71.kuno-schuerch.bbzwinf.ch',
         changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/api/, ''),
+        rewrite: (path) => {
+          const rewritten = path.replace(/^\/api/, '')
+          console.log(`Proxy rewrite: ${path} -> ${rewritten}`)
+          return rewritten
+        },
+        secure: false,
+        ws: true,
+        logLevel: 'debug',
         agent: new https.Agent({
           rejectUnauthorized: false,
         }),

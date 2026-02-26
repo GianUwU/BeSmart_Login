@@ -1,5 +1,8 @@
 import { useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
+import { useLanguage } from '../context/LanguageContext'
+import { translations } from '../translations'
+import LanguageSwitcher from '../components/LanguageSwitcher'
 import '../styles/Dashboard.css'
 
 export default function Dashboard() {
@@ -8,78 +11,60 @@ export default function Dashboard() {
   const [error, setError] = useState('')
   const username = localStorage.getItem('username')
   const navigate = useNavigate()
+  const { lang } = useParams()
+  const { language, setLanguage } = useLanguage()
 
   useEffect(() => {
-    // Check if user is logged in
-    if (!localStorage.getItem('token')) {
-      navigate('/login')
+    if (lang && ['en', 'fr', 'de'].includes(lang)) {
+      setLanguage(lang)
+    } else if (lang) {
+      navigate('/dashboard/en', { replace: true })
+    }
+  }, [lang, setLanguage, navigate])
+
+  const t = translations[language]?.dashboard || translations.en.dashboard
+
+  useEffect(() => {
+    if (!username) {
+      navigate('/login/en')
       return
     }
 
-    // Fetch products
-    const fetchProducts = async () => {
-      try {
-        const response = await fetch('/api/product/list', {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        })
-
-        const data = await response.json()
-
-        if (!response.ok) {
-          setError(data.message || 'Failed to fetch products')
-          return
-        }
-
-        setProducts(data.products || data || [])
-      } catch (err) {
-        setError('An error occurred while fetching products.')
-        console.error('Fetch error:', err)
-      } finally {
-        setLoading(false)
-      }
-    }
-
-    fetchProducts()
-  }, [navigate])
+    fetch('/api/product/list')
+      .then((res) => res.json())
+      .then((data) => setProducts(data.products || data || []))
+      .catch((err) => setError(err.message))
+      .finally(() => setLoading(false))
+  }, [navigate, username])
 
   const handleLogout = () => {
-    localStorage.removeItem('token')
-    localStorage.removeItem('username')
+    localStorage.clear()
     navigate('/login')
   }
 
   return (
     <div className="dashboard-container">
+      <LanguageSwitcher currentPath="dashboard" />
       <header className="dashboard-header">
-        <h1>Welcome, {username}!</h1>
-        <button onClick={handleLogout} className="logout-btn">
-          Logout
-        </button>
+        <h1>{t.welcome}, {username}!</h1>
+        <button onClick={handleLogout} className="logout-btn">{t.logout}</button>
       </header>
-
       <main className="dashboard-main">
-        <section className="products-section">
-          <h2>Products</h2>
-          {loading && <p className="loading">Loading products...</p>}
-          {error && <p className="error">{error}</p>}
-          {!loading && !error && products.length === 0 && (
-            <p className="no-products">No products available</p>
-          )}
-          {!loading && products.length > 0 && (
-            <div className="products-grid">
-              {products.map((product) => (
-                <div key={product.id || product.name} className="product-card">
-                  <h3>{product.name}</h3>
-                  {product.description && <p>{product.description}</p>}
-                  {product.price && <p className="price">${product.price}</p>}
-                </div>
-              ))}
-            </div>
-          )}
-        </section>
+        <h2>{t.products}</h2>
+        {loading && <p className="loading">{t.loading}</p>}
+        {error && <p className="error">{error}</p>}
+        {!loading && !error && products.length === 0 && <p>{t.noProducts}</p>}
+        {products.length > 0 && (
+          <div className="products-grid">
+            {products.map((product) => (
+              <div key={product.id || product.name} className="product-card">
+                <h3>{product.name}</h3>
+                {product.description && <p>{product.description}</p>}
+                {product.price && <p className="price">${product.price}</p>}
+              </div>
+            ))}
+          </div>
+        )}
       </main>
     </div>
   )
